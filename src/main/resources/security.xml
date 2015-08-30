@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security-3.2.xsd 
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd"
+	default-lazy-init="false" default-autowire="byName">
+	<global-method-security pre-post-annotations="enabled">
+	</global-method-security>
+	<http security="none" pattern="/**/kaptcha.jpg" />
+	<http security="none" pattern="/**/login.do" />
+	<http security="none" pattern="/**/register_custom.jsp" />
+	<http security="none" pattern="/**/resources" />
+	<http security="none" pattern="/download/**" />
+	<http security="none" pattern="/common/**" />
+
+	<!-- 后台管理用户配置 -->
+	<http pattern="/admin/**" use-expressions="true" create-session="ifRequired"
+		access-denied-page="/common/accessdeny.jsp"
+		authentication-manager-ref="adminAuthManager"
+		access-decision-manager-ref="accessDecisionManager">
+		<intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+		<form-login login-page="/admin/login.do"
+			default-target-url="/admin/index.do" always-use-default-target="true"
+			login-processing-url="/admin/j_spring_security_check" />
+		<logout logout-url="/admin/logout" logout-success-url="/admin/login.do" />
+		<custom-filter ref="" after="FIRST" />
+	</http>
+
+
+	<!-- 前台用户登录 -->
+	<http pattern="/cust/**" use-expressions="true" create-session="ifRequired"
+		access-denied-page="/common/accessdeny.jsp"
+		authentication-manager-ref="userAuthManager"
+		access-decision-manager-ref="accessDecisionManager">
+		<intercept-url pattern="/cust/**" access="hasRole('ROLE_CUST')" />
+		<form-login login-page="/cust/login.do"
+			authentication-failure-url="/cust/login.do" default-target-url="/cust/index.do"
+			always-use-default-target="true" login-processing-url="/cust/j_spring_security_check" />
+		<logout logout-url="/cust/logout" logout-success-url="/cust/login.do" />
+	</http>
+
+
+	<!-- 后台系统管理员登录 -->
+	<http pattern="/sys/**" use-expressions="true" create-session="ifRequired"
+		access-denied-page="/common/accessdeny.jsp"
+		authentication-manager-ref="sysAuthManager"
+		access-decision-manager-ref="accessDecisionManager">
+		<intercept-url pattern="/sys/**" access="hasRole('ROLE_SYSTEM')" />
+		<form-login login-page="/sys/login.do" default-target-url="/sys/index.do"
+			always-use-default-target="true" login-processing-url="/sys/j_spring_security_check" />
+		<logout logout-url="/sys/logout" logout-success-url="/sys/login.do" />
+	</http>
+
+	<authentication-manager>
+		<authentication-provider>
+			<user-service>
+				<user name="CUST" authorities="ROLE_CUST" password="123456" />
+				<user name="admin" authorities="ROLE_ADMIN" password="123456" />
+				<user name="system" authorities="ROLE_SYSTEM" password="123456" />
+			</user-service>
+		</authentication-provider>
+		<!-- <authentication-provider user-service-ref="custUserAdminService"> 
+			<password-encoder ref="posmallPasswordEncoder" /> </authentication-provider> -->
+	</authentication-manager>
+
+	<!-- 投票器配置 -->
+	<beans:bean id="accessDecisionManager"
+		class="org.springframework.security.access.vote.AffirmativeBased">
+		<beans:property name="decisionVoters">
+			<beans:list>
+				<beans:bean class="org.ohuyo.rapid.base.security.DynamicRoleVoter" />
+				<beans:bean
+					class="org.springframework.security.web.access.expression.WebExpressionVoter" />
+				<beans:bean class="org.springframework.security.access.vote.RoleVoter" />
+				<beans:bean
+					class="org.springframework.security.access.vote.AuthenticatedVoter" />
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+</beans:beans>    

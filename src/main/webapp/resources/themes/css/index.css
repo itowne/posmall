@@ -1,0 +1,46 @@
+@charset "utf-8";
+
+.logo{
+	background: url("../default/images/logo.png") no-repeat;
+}
+.login_logo a{
+	width:450px;
+	display: inline-block;
+	color: #000;
+	text-decoration: none;
+}
+.login_logo a img{
+	float:left;
+}
+.login_logo a span{
+	float: left;
+	margin-left: 10px;	
+}
+.login_logo a span.title{
+	font-size: 25px;
+}
+.login_logo a span.link{
+	font-size: 15px;
+	margin-top:5px;	
+}
+.tablebtn {
+	border-bottom: none;
+	border-top: none;
+	background: none;	
+}
+table.list th{
+	text-align: center;
+}
+
+/* .pageFormContent fieldset {
+	width: 400px;	
+} */
+
+.helpinfo legend {
+	font-size: 18px;
+}
+
+.helpinfo li {
+	margin: 6px 8px;
+	font-size: 15px;
+}

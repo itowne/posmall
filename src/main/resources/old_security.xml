@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security-3.2.xsd 
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd"
+	default-lazy-init="false" default-autowire="byName">
+	<global-method-security pre-post-annotations="enabled">
+	</global-method-security>
+	<http security="none" pattern="/**/kaptcha.jpg" />
+	<http security="none" pattern="/**/login.do" />
+	<http security="none" pattern="/**/resources" />
+	<http security="none" pattern="/download/**" />
+
+	<!-- 后台管理用户配置 -->
+	<http pattern="/admin/**" use-expressions="true"
+		entry-point-ref="adminauthenticationProcessingFilterEntryPoint"
+		create-session="ifRequired" authentication-manager-ref="adminAuthManager"
+		auto-config="false">
+		<intercept-url pattern="/admin/**" access="hasRole('ROLE_BACK_USER')" />
+		<form-login login-page="/admin/login.do"
+			default-target-url="/admin/index.do" always-use-default-target="true"
+			login-processing-url="/admin/j_spring_security_check" />
+		<logout logout-url="/admin/logout" logout-success-url="/admin/login.do" />
+		<custom-filter ref="adminCustomerFilter" position="FORM_LOGIN_FILTER" />
+	</http>
+	<beans:bean id="adminCustomerFilter"
+		class="com.newland.posmall.security.ValidCodeUsernamePasswordAuthenticationFilter">
+		<beans:property name="filterProcessesUrl" value="/admin/j_spring_security_check"></beans:property>
+		<beans:property name="authenticationSuccessHandler"
+			ref="adminloginLogAuthenticationSuccessHandler"></beans:property>
+		<beans:property name="authenticationFailureHandler"
+			ref="adminsimpleUrlAuthenticationFailureHandler"></beans:property>
+		<beans:property name="authenticationManager" ref="adminAuthManager"></beans:property>
+	</beans:bean>
+	<beans:bean id="adminauthenticationProcessingFilterEntryPoint"
+		class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+		<beans:property name="loginFormUrl" value="/admin/login.do"></beans:property>
+	</beans:bean>
+	<beans:bean id="adminloginLogAuthenticationSuccessHandler"
+		class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+		<beans:property name="defaultTargetUrl" value="/admin/index.do"></beans:property>
+	</beans:bean>
+	<beans:bean id="adminsimpleUrlAuthenticationFailureHandler"
+		class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+		<beans:property name="defaultFailureUrl" value="/admin/login.do?error=true"></beans:property>
+	</beans:bean>
+
+	<!-- 前台用户登录 -->
+	<http auto-config="false" entry-point-ref="custauthenticationProcessingFilterEntryPoint"
+		pattern="/cust/**" use-expressions="true" create-session="ifRequired"
+		authentication-manager-ref="userAuthManager">
+		<intercept-url pattern="/cust/**" access="hasRole('ROLE_USER')" />
+		<!-- 
+		<form-login login-page="/cust/login.do"
+			authentication-failure-url="/cust/login.do" default-target-url="/cust/index.do"
+			always-use-default-target="true" login-processing-url="/cust/j_spring_security_check" />
+		 -->
+		<logout logout-url="/cust/logout" logout-success-url="/cust/login.do" />
+		<custom-filter ref="custCustomerFilter" position="FORM_LOGIN_FILTER" />
+	</http>
+	<beans:bean id="custCustomerFilter"
+		class="com.newland.posmall.security.ValidCodeUsernamePasswordAuthenticationFilter">
+		<beans:property name="filterProcessesUrl" value="/cust/j_spring_security_check"></beans:property>
+		<beans:property name="authenticationSuccessHandler"
+			ref="custloginLogAuthenticationSuccessHandler"></beans:property>
+		<beans:property name="authenticationFailureHandler"
+			ref="custsimpleUrlAuthenticationFailureHandler"></beans:property>
+		<beans:property name="authenticationManager" ref="userAuthManager"></beans:property>
+	</beans:bean>
+	<beans:bean id="custauthenticationProcessingFilterEntryPoint"
+		class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+		<beans:property name="loginFormUrl" value="/cust/login.do"></beans:property>
+	</beans:bean>
+	<beans:bean id="custloginLogAuthenticationSuccessHandler"
+		class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+		<beans:property name="defaultTargetUrl" value="/cust/index.do"></beans:property>
+	</beans:bean>
+	<beans:bean id="custsimpleUrlAuthenticationFailureHandler"
+		class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+		<beans:property name="defaultFailureUrl" value="/cust/login.do?error=true"></beans:property>
+	</beans:bean>
+
+	<!-- 后台系统管理员登录 -->
+	<http pattern="/sys/**" use-expressions="true"
+		entry-point-ref="sysauthenticationProcessingFilterEntryPoint"
+		create-session="ifRequired" authentication-manager-ref="sysAuthManager">
+		<intercept-url pattern="/sys/**" access="hasRole('ROLE_BACK_USER')" />
+		<!-- 
+		<form-login login-page="/sys/login.do" default-target-url="/sys/index.do"
+			always-use-default-target="true" login-processing-url="/sys/j_spring_security_check" />
+		 -->
+		<logout logout-url="/sys/logout" logout-success-url="/sys/login.do" />
+		<custom-filter ref="sysCustomerFilter" position="FORM_LOGIN_FILTER" />
+	</http>
+	<beans:bean id="sysCustomerFilter"
+		class="com.newland.posmall.security.ValidCodeUsernamePasswordAuthenticationFilter">
+		<beans:property name="filterProcessesUrl" value="/sys/j_spring_security_check"></beans:property>
+		<beans:property name="authenticationSuccessHandler"
+			ref="sysloginLogAuthenticationSuccessHandler"></beans:property>
+		<beans:property name="authenticationFailureHandler"
+			ref="syssimpleUrlAuthenticationFailureHandler"></beans:property>
+		<beans:property name="authenticationManager" ref="sysAuthManager"></beans:property>
+	</beans:bean>
+	<beans:bean id="sysauthenticationProcessingFilterEntryPoint"
+		class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+		<beans:property name="loginFormUrl" value="/sys/login.do"></beans:property>
+	</beans:bean>
+	<beans:bean id="sysloginLogAuthenticationSuccessHandler"
+		class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
+		<beans:property name="defaultTargetUrl" value="/sys/index.do"></beans:property>
+	</beans:bean>
+	<beans:bean id="syssimpleUrlAuthenticationFailureHandler"
+		class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+		<beans:property name="defaultFailureUrl" value="/sys/login.do?error=true"></beans:property>
+	</beans:bean>
+
+	<beans:bean id="posmallPasswordEncoder"
+		class="com.newland.posmall.security.impl.PosmallPasswordEncoder" />
+	<!-- 前台用户登录验证器 -->
+	<authentication-manager id="userAuthManager">
+		<authentication-provider>
+			<user-service>
+				<user name="user" authorities="ROLE_USER" password="123456" />
+			</user-service>
+		</authentication-provider>
+		<!-- <authentication-provider user-service-ref="custUserAdminService"> 
+			<password-encoder ref="posmallPasswordEncoder" /> </authentication-provider> -->
+	</authentication-manager>
+	<!-- 前台用户登录验证器 -->
+	<authentication-manager id="sysAuthManager">
+		<authentication-provider>
+			<user-service>
+				<user name="system" authorities="ROLE_ADMIN" password="123456" />
+			</user-service>
+		</authentication-provider>
+		<!-- <authentication-provider user-service-ref="custUserAdminService"> 
+			<password-encoder ref="posmallPasswordEncoder" /> </authentication-provider> -->
+	</authentication-manager>
+	<!--后台管理用户验证管理bean -->
+	<authentication-manager id="adminAuthManager">
+		<authentication-provider>
+			<user-service>
+				<user name="admin" authorities="ROLE_BACK_USER" password="123456" />
+			</user-service>
+		</authentication-provider>
+		<!-- <authentication-provider user-service-ref="adminUserService"> <password-encoder 
+			ref="posmallPasswordEncoder" /> </authentication-provider> -->
+	</authentication-manager>
+</beans:beans>    

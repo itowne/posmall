@@ -1,0 +1,11 @@
+option batch on
+option confirm off
+open root@121.40.154.58
+cd /home/nladmin/webapp
+
+option transfer binary
+put ..\..\target\posmall.war
+cd /home/nladmin/bin
+call ./deploy.sh
+close
+exit

@@ -1,0 +1,26 @@
+﻿delete from t_user_userrole;
+
+insert into t_user_userrole(i_user,i_userrole) values(1,1);
+insert into t_user_userrole(i_user,i_userrole) values(1,2);
+insert into t_user_userrole(i_user,i_userrole) values(1,3);
+insert into t_user_userrole(i_user,i_userrole) values(1,4);
+insert into t_user_userrole(i_user,i_userrole) values(1,5);
+insert into t_user_userrole(i_user,i_userrole) values(11,1);
+insert into t_user_userrole(i_user,i_userrole) values(11,2);
+insert into t_user_userrole(i_user,i_userrole) values(11,3);
+insert into t_user_userrole(i_user,i_userrole) values(11,4);
+insert into t_user_userrole(i_user,i_userrole) values(11,5);
+insert into t_user_userrole(i_user,i_userrole) values(34,5);
+insert into t_user_userrole(i_user,i_userrole) values(35,2);
+insert into t_user_userrole(i_user,i_userrole) values(36,2);
+insert into t_user_userrole(i_user,i_userrole) values(37,2);
+insert into t_user_userrole(i_user,i_userrole) values(38,4);
+insert into t_user_userrole(i_user,i_userrole) values(39,4);
+insert into t_user_userrole(i_user,i_userrole) values(40,1);
+insert into t_user_userrole(i_user,i_userrole) values(41,1);
+insert into t_user_userrole(i_user,i_userrole) values(42,1);
+insert into t_user_userrole(i_user,i_userrole) values(43,1);
+insert into t_user_userrole(i_user,i_userrole) values(40,4);
+insert into t_user_userrole(i_user,i_userrole) values(41,4);
+insert into t_user_userrole(i_user,i_userrole) values(42,4);
+insert into t_user_userrole(i_user,i_userrole) values(43,4);

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd   
+       	http://www.springframework.org/schema/aop 
+       	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd   
+       	http://www.springframework.org/schema/mvc   
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       	http://www.springframework.org/schema/tx 
+       	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd   
+       	http://www.springframework.org/schema/context 
+       	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       	http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+	<!-- URL Mapping -->
+	
+	<sec:global-method-security pre-post-annotations="enabled">
+	</sec:global-method-security>
+	<context:annotation-config />
+	<!-- 把标记了@Controller注解的类转换为bean -->
+	<context:component-scan base-package="com.newland.posmall.controller"
+		use-default-filters="false">
+		<context:include-filter expression="org.springframework.stereotype.Controller"
+			type="annotation" />
+	</context:component-scan>
+	<!-- 启动Spring MVC的注解功能，完成请求和注解POJO的映射 -->
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<!-- Spring MVC参数格式转化器 -->
+		<property name="webBindingInitializer">
+			<bean class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer">  
+		        <property name="conversionService">
+		            <bean class="org.springframework.format.support.FormattingConversionServiceFactoryBean"/>  
+		        </property>
+    		</bean>
+		</property>
+		<property name="messageConverters">     
+         <list>     
+             <bean class = "org.springframework.http.converter.StringHttpMessageConverter">     
+                <property name = "supportedMediaTypes">  
+                      <list>  
+                          <value>text/html;charset=UTF-8</value>     
+                     </list>     
+                </property>     
+             </bean>     
+         </list>     
+      </property>
+	</bean>
+
+	<!-- 对模型视图名称的解析，即在模型视图名称添加前后缀 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+		p:prefix="" p:suffix=".jsp" />
+
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
+		p:defaultEncoding="utf-8" >
+		<property name="maxUploadSize">
+			<value>104857600</value>
+		</property>
+		<property name="maxInMemorySize">
+			<value>1024000</value>
+		</property>
+	</bean>
+	<bean
+		class="org.ohuyo.rapid.exception.CustomerMappingExceptionResolver">
+		<!-- 定义默认的异常处理页面，当该异常类型的注册时使用 -->
+		<property name="defaultErrorView" value="error/exception"></property>
+		<!-- 定义需要特殊处理的异常，用类名或完全路径名作为key，异常也页名作为值 -->
+		<property name="exceptionMappings">
+			<props>
+				<prop key="java.lang.Exception">/error/exception</prop>
+			</props>
+		</property>
+	</bean>
+<!-- 	<bean
+		class="org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver">
+		定义默认的异常处理页面，当该异常类型的注册时使用
+	</bean> -->
+</beans>
